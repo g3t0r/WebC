@@ -39,45 +39,47 @@ int main(int argc, char **argv)
   struct sockaddr *peerAddr = NULL;
   socklen_t *peerAddrSize = NULL;
 
-  int acceptedSock = accept(sock, peerAddr, peerAddrSize);
   char buff[100];
 
   printf("Reading packet:\n");
 
-  int r = 0;
-  // while ((r = read(acceptedSock, buff, sizeof(buff))) != 1)
-  // {
-  //   printf("%s\n", buff);
-  //   printf("r:%d", r);
-  // }
-  printf("\nFinished Reading\n");
-  printf("\nSENDING\n");
-  char *resp = "HTTP/1.1 200 OK\n"
-                     "Content-Type: text/html\n"
-                     "Content-Length: 7\n"
-                     "Accept-Ranges: bytes\n"
-                     "Connection: close\n"
-                     "\n"
-                     "<html>";
+  int acceptedSock = accept(sock, peerAddr, peerAddrSize);
+  while (1)
+  {
 
-  char *reply =
-      "HTTP/1.1 200 OK\n"
-      "Date: Thu, 19 Feb 2009 12:27:04 GMT\n"
-      "Server: Apache/2.2.3\n"
-      "Last-Modified: Wed, 18 Jun 2003 16:05:58 GMT\n"
-      "ETag: \"56d-9989200-1132c580\"\n"
-      "Content-Type: text/html\n"
-      "Content-Length: 16\n"
-      "Accept-Ranges: bytes\n"
-      "Connection: keep-alive\n"
-      "\n"
-      "sdfkjsdnbfkjbsf";
+    printf("%s\n", strerror(errno));
+    printf("\nFinished Reading\n");
+    printf("\nSENDING\n");
+    char *resp = "HTTP/1.1 200 OK\n"
+                 "Content-Type: text/html\n"
+                 "Content-Length: 5\n"
+                 "Accept-Ranges: bytes\n"
+                 "Connection: close\n"
+                 "\n"
+                 "abcd";
 
-  send(acceptedSock, reply, strlen(reply), 0);
-  printf("\nFinished SENDING\n");
+    char *reply =
+        "HTTP/1.1 200 OK\n"
+        "Date: Thu, 19 Feb 2009 12:27:04 GMT\n"
+        "Server: Apache/2.2.3\n"
+        "Last-Modified: Wed, 18 Jun 2003 16:05:58 GMT\n"
+        "ETag: \"56d-9989200-1132c580\"\n"
+        "Content-Type: text/html\n"
+        "Content-Length: 16\n"
+        "Accept-Ranges: bytes\n"
+        "Connection: keep-alive\n"
+        "\n"
+        "sdfkjsdnbfkjbsf";
 
-  printf("%s\n", strerror(errno));
-  // close(acceptedSock);
-  // close(sock);
+    int wrote = 0;
+    while ((wrote = send(acceptedSock, resp, strlen(resp), 0)) != -1)
+    {
+      printf("Wrote: %d bytes\n", wrote);
+    }
+
+    printf("%s\n", strerror(errno));
+    printf("\nFinished SENDING\n");
+  }
+
   return 0;
 }

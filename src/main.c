@@ -17,13 +17,28 @@ void pifin(int res, const char* name) {
 }
 
 const char* get_response() {
-  return "HTTP/1.1 200 OK\r\n"
-    "Content-Type: text/html\r\n"
-    "Content-Length: 5\r\n"
-    "Accept-Ranges: bytes\r\n"
-    "Connection: close\r\n"
-    "\r\n"
-    "abcd";
+  return "HTTP/1.1 200 OK\n"
+    "Content-Type: text/html\n"
+    "Content-Length: 5\n"
+    "Accept-Ranges: bytes\n"
+    "Connection: close\n"
+    "\n"
+    "abcd\n";
+
+  // char* reply =
+  //   "HTTP/1.1 200 OK\n"
+  //   "Date: Thu, 19 Feb 2009 12:27:04 GMT\n"
+  //   "Server: Apache/2.2.3\n"
+  //   "Last-Modified: Wed, 18 Jun 2003 16:05:58 GMT\n"
+  //   "ETag: \"56d-9989200-1132c580\"\n"
+  //   "Content-Type: text/html\n"
+  //   "Content-Length: 15\n"
+  //   "Accept-Ranges: bytes\n"
+  //   "Connection: close\n"
+  //   "\n"
+  //   "sdfkjsdnbfkjbsf";
+
+    // return reply;
 }
 
 const char* get_peer_ip(const struct sockaddr_in* const peer_addr) {
@@ -39,7 +54,7 @@ void handle_connection(int server_sd)
   char buff[20];
   struct pollfd pfds[1];
   int rc, ret, transfered;
-  const char *response = get_response();
+  const char* response = get_response();
 
   int peer_sd = accept(server_sd, NULL, NULL);
   pifin(peer_sd, "peer_sd");
@@ -82,47 +97,17 @@ void handle_connection(int server_sd)
   printf("Full request: %s", request);
 
   // write response
-  memset((void *) &pfds[0], 0, sizeof(pfds[0]));
+
+  ret = 0;
   transfered = 0;
+  ret = write(peer_sd, response, strlen(response) + 1);
+  pifin(ret, "write");
+  printf("write: %d", ret);
 
-  ssize_t resp_size = strlen(response);
+  // ret = write(peer_sd, "\0", 1);
+  // pifin(ret, "write");
+  // printf("write: %d" ,ret);
 
-
-  while(1) {
-    printf("transfered: %d/%d\n", transfered, resp_size);
-    memset(buff, 0, sizeof(buff));
-    pfds[0].fd = peer_sd;
-    pfds[0].events = 0;
-    pfds[0].events |= POLLOUT;
-
-
-    rc = poll(pfds, 1, 1000);
-    pifin(rc, "poll write");
-
-
-    if (rc == 0) {
-      printf("  Finished writing\n");
-      break;
-    
-    if(transfered >= resp_size) {
-      printf("All done\n");
-      break;
-    }
-
-    } else {
-      printf("uno\n");
-      memcpy(buff, response + transfered, sizeof(buff));
-      ret = write(peer_sd, buff, strlen(buff));
-      pifin(ret, "write");
-
-      if(ret == -1) {
-        break;
-      }
-
-      transfered += ret;
-    }
-
-  }
 
 }
 

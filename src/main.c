@@ -58,7 +58,7 @@ void handle_connection(int server_sd)
     pfds[0].events = 0;
     pfds[0].events |= POLLIN;
 
-    rc = poll(pfds, 1, 10);
+    rc = poll(pfds, 1, 0);
 
     if (rc == 0) {
       printf("  Finished reading\n");

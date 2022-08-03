@@ -24,21 +24,6 @@ const char* get_response() {
     "Connection: close\n"
     "\n"
     "abcd\n";
-
-  // char* reply =
-  //   "HTTP/1.1 200 OK\n"
-  //   "Date: Thu, 19 Feb 2009 12:27:04 GMT\n"
-  //   "Server: Apache/2.2.3\n"
-  //   "Last-Modified: Wed, 18 Jun 2003 16:05:58 GMT\n"
-  //   "ETag: \"56d-9989200-1132c580\"\n"
-  //   "Content-Type: text/html\n"
-  //   "Content-Length: 15\n"
-  //   "Accept-Ranges: bytes\n"
-  //   "Connection: close\n"
-  //   "\n"
-  //   "sdfkjsdnbfkjbsf";
-
-    // return reply;
 }
 
 const char* get_peer_ip(const struct sockaddr_in* const peer_addr) {
@@ -51,7 +36,7 @@ void handle_connection(int server_sd)
   struct sockaddr_in peer_addr;
   socklen_t peer_addr_size;
   char request[4096];
-  char buff[20];
+  char buff[2048];
   struct pollfd pfds[1];
   int rc, ret, transfered;
   const char* response = get_response();
@@ -61,7 +46,6 @@ void handle_connection(int server_sd)
   if (peer_sd == -1) {
     return;
   }
-
 
   printf("DEBUG: peer_addr - %s\n", get_peer_ip(&peer_addr));
   printf("DEBUG: peer_addr_size - %d\n", peer_addr_size);
@@ -74,7 +58,7 @@ void handle_connection(int server_sd)
     pfds[0].events = 0;
     pfds[0].events |= POLLIN;
 
-    rc = poll(pfds, 1, 1000);
+    rc = poll(pfds, 1, 10);
 
     if (rc == 0) {
       printf("  Finished reading\n");

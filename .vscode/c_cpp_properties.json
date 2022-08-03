@@ -6,7 +6,7 @@
                 "${workspaceFolder}/**",
                 "/usr/include/**",
                 "/usr/local/include/**",
-                "/usr/include/linux/"
+                "/usr/include/linux/**"
             ],
             "defines": [
                 "NULL",
@@ -15,10 +15,11 @@
             "compilerPath": "/usr/bin/gcc",
             "cStandard": "c99",
             "cppStandard": "c++17",
-            "intelliSenseMode": "linux-gcc-x64",
+            "intelliSenseMode": "clang-x64",
             "browse": {
                 "path": [
-                    "/usr/include/**"
+                    "/usr/include/**",
+                    "/usr/local/include/**"
                 ]
             }
         }

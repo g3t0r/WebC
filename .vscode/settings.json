@@ -3,6 +3,7 @@
         "string.h": "c",
         "inet.h": "c",
         "server.h": "c",
-        "ip.h": "c"
+        "ip.h": "c",
+        "unistd.h": "c"
     }
 }

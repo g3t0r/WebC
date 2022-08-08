@@ -1,2 +1,2 @@
 mkdir -p build
-cc src/main.c -o ./build/webC
+cc src/tcp.c src/files.c src/http.c src/server.c -o ./build/webC

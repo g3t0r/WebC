@@ -4,6 +4,8 @@
         "inet.h": "c",
         "server.h": "c",
         "ip.h": "c",
-        "unistd.h": "c"
+        "unistd.h": "c",
+        "utils.h": "c",
+        "files.h": "c"
     }
 }

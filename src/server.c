@@ -1,6 +1,8 @@
 #include "server.h"
 #include "arpa/inet.h"
 #include "errno.h"
+#include "files.h"
+#include "http.h"
 #include "netinet/ip.h"
 #include "poll.h"
 #include "stdio.h"
@@ -9,12 +11,8 @@
 #include "sys/socket.h"
 #include "tcp.h"
 #include "unistd.h"
-#include "files.h"
 
 int start_server(const char *ip, u_int16_t port, const char *dir) {
-  unsigned int content = NULL;
-  content = load_file("static", "/");
-  printf("content: %s\n", content);
   int sock_fd, r;
   sock_fd = socket(AF_INET, SOCK_STREAM, 0);
   struct sockaddr_in addr;
@@ -24,18 +22,30 @@ int start_server(const char *ip, u_int16_t port, const char *dir) {
   addr.sin_addr.s_addr = inet_addr("0.0.0.0");
 
   r = bind(sock_fd, (const struct sockaddr *)&addr, sizeof(addr));
+  perror(strerror(errno));
 
   r = listen(sock_fd, 1);
+  perror(strerror(errno));
   handle_connection(sock_fd);
+  close(sock_fd);
 }
 
 int handle_connection(int sock_fd) {
   int r, peer_sd;
   const char *request;
+  while (1) {
 
-  peer_sd = accept(sock_fd, NULL, NULL);
-  request = read_tcp_message(peer_sd);
-  write_tcp_message(0, request);
+    peer_sd = accept(sock_fd, NULL, NULL);
+
+    const char *content = NULL;
+    content = load_file("static", "/");
+    struct http_resp *rsp = create_ok_response(content);
+    const char *rawrsp = resp_to_str(rsp);
+    free(rsp->body);
+    free(rsp);
+    printf("%s", rawrsp);
+    write_tcp_message(peer_sd, rawrsp);
+  }
 }
 
 int main() { start_server(NULL, NULL, NULL); }

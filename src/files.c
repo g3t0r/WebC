@@ -23,6 +23,7 @@ const char *load_file(const char *webc_files_dir, const char *path) {
   strcat(full_path, path);
 
   FILE *file = find(full_path);
+  free(full_path);
   if (file == NULL) {
     printf(":((((((((\n");
     exit(404);
@@ -32,23 +33,16 @@ const char *load_file(const char *webc_files_dir, const char *path) {
   int bytes_n = ftell(file);
   fseek(file, 0L, SEEK_SET);
 
-  printf("bytes_n = %d\n", bytes_n);
-
   fread(content, sizeof(char), bytes_n, file);
   perror(strerror(errno));
-  printf("CON: %s\n", content);
-  printf("CON: %d\n", content);
 
   return content;
-  int a = 4;
-  printf("4");
 }
 
 int find(const char *full_path) {
   FILE *file;
 
   file = fopen(full_path, "r");
-  printf("full_path: %s\n", full_path);
   if (file != NULL && !isDirectory(full_path)) {
     return file;
   } else {

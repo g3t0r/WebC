@@ -22,10 +22,8 @@ int start_server(const char *ip, u_int16_t port, const char *dir) {
   addr.sin_addr.s_addr = inet_addr("0.0.0.0");
 
   r = bind(sock_fd, (const struct sockaddr *)&addr, sizeof(addr));
-  perror(strerror(errno));
 
   r = listen(sock_fd, 1);
-  perror(strerror(errno));
   handle_connection(sock_fd);
   close(sock_fd);
 }
@@ -39,11 +37,19 @@ int handle_connection(int sock_fd) {
 
     const char *content = NULL;
     content = load_file("static", "/");
-    struct http_resp *rsp = create_ok_response(content);
-    const char *rawrsp = resp_to_str(rsp);
-    free(rsp->body);
+
+    struct http_resp *rsp = NULL;
+    const char *rawrsp;
+    if(content == NULL) {
+      rsp = create_404_response();
+      rawrsp = resp_to_str(rsp);
+    } else {
+      rsp = create_ok_response(content);
+      rawrsp = resp_to_str(rsp);
+      free(rsp->body);
+    }
+
     free(rsp);
-    printf("%s", rawrsp);
     write_tcp_message(peer_sd, rawrsp);
   }
 }

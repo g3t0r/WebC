@@ -25,8 +25,8 @@ const char *load_file(const char *webc_files_dir, const char *path) {
   FILE *file = find(full_path);
   free(full_path);
   if (file == NULL) {
-    printf(":((((((((\n");
-    exit(404);
+    perror("file");
+    return NULL;
   }
 
   fseek(file, 0L, SEEK_END);
@@ -34,8 +34,7 @@ const char *load_file(const char *webc_files_dir, const char *path) {
   fseek(file, 0L, SEEK_SET);
 
   fread(content, sizeof(char), bytes_n, file);
-  perror(strerror(errno));
-
+  fclose(file);
   return content;
 }
 
@@ -48,14 +47,10 @@ int find(const char *full_path) {
   } else {
     const char *path_with_index = malloc(strlen(full_path) + 11);
     strcat(path_with_index, full_path);
-    printf("a\n");
     strcat(path_with_index, "index.html");
-    printf("b\n");
-    printf(path_with_index);
     file = fopen(path_with_index, "r");
-    perror(strerror(errno));
     if (file == NULL) {
-      exit(1);
+      return NULL;
     }
     return file;
   }

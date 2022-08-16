@@ -9,8 +9,12 @@
 #include "sys/socket.h"
 #include "tcp.h"
 #include "unistd.h"
+#include "files.h"
 
 int start_server(const char *ip, u_int16_t port, const char *dir) {
+  unsigned int content = NULL;
+  content = load_file("static", "/");
+  printf("content: %s\n", content);
   int sock_fd, r;
   sock_fd = socket(AF_INET, SOCK_STREAM, 0);
   struct sockaddr_in addr;

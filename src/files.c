@@ -13,6 +13,24 @@ int isDirectory(const char *path) {
   return S_ISDIR(statbuf.st_mode);
 }
 
+FILE* find(const char *full_path) {
+  FILE *file;
+
+  file = fopen(full_path, "r");
+  if (file != NULL && !isDirectory(full_path)) {
+    return file;
+  } else {
+    const char *path_with_index = malloc(strlen(full_path) + 11);
+    strcat(path_with_index, full_path);
+    strcat(path_with_index, "index.html");
+    file = fopen(path_with_index, "r");
+    if (file == NULL) {
+      return NULL;
+    }
+    return file;
+  }
+}
+
 const char *load_file(const char *webc_files_dir, const char *path) {
   int dir_l = strlen(webc_files_dir) * sizeof *path;
   int path_l = strlen(path) * sizeof *path;
@@ -36,22 +54,4 @@ const char *load_file(const char *webc_files_dir, const char *path) {
   fread(content, sizeof(char), bytes_n, file);
   fclose(file);
   return content;
-}
-
-int find(const char *full_path) {
-  FILE *file;
-
-  file = fopen(full_path, "r");
-  if (file != NULL && !isDirectory(full_path)) {
-    return file;
-  } else {
-    const char *path_with_index = malloc(strlen(full_path) + 11);
-    strcat(path_with_index, full_path);
-    strcat(path_with_index, "index.html");
-    file = fopen(path_with_index, "r");
-    if (file == NULL) {
-      return NULL;
-    }
-    return file;
-  }
 }

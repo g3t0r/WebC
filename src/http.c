@@ -13,7 +13,6 @@ struct http_req *parse_request(const char *request) {
   rq->path = strtok(NULL, " ");
   printf("Method: %s\n", rq->method);
   printf("Path: %s\n", rq->path);
-  free((void *)fl);
   return rq;
 }
 
@@ -26,7 +25,15 @@ const char *resp_to_str(const struct http_resp *const response) {
   return bfc;
 }
 
-const struct http_resp *const create_405_response(const char *body) {}
+const struct http_resp *const create_405_response() {
+  struct http_resp *resp = malloc(sizeof *resp);
+  resp->body = "<html><body>"
+               "<img src=\"https://http.cat/405\"/>"
+               "</body></html>\n";
+  resp->status_code = 405;
+  resp->status_text = "Method Not Allowed";
+  return resp;
+}
 
 const struct http_resp *const create_404_response() {
   struct http_resp *resp = malloc(sizeof *resp);

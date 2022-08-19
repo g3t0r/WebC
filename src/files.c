@@ -36,7 +36,7 @@ const char *load_file(const char *webc_files_dir, const char *path) {
   if( asprintf(&full_path, "%s%s", webc_files_dir, path) == -1 ) {
     perror("asprintf");
   }
-  char *content = malloc(10000 * sizeof *content);
+  char *content = calloc(10000000, sizeof *content);
   FILE *file = find(full_path);
   free(full_path);
   if (file == NULL) {

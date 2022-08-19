@@ -24,22 +24,45 @@ int start_server(const char *ip, u_int16_t port, const char *dir) {
   r = bind(sock_fd, (const struct sockaddr *)&addr, sizeof(addr));
 
   r = listen(sock_fd, 1);
-  handle_connection(sock_fd);
+  handle_connections(sock_fd);
   close(sock_fd);
 }
 
-int handle_connection(int sock_fd) {
+int handle_connections(int sock_fd) {
   int r, peer_sd;
-  const char *request;
+  const char *message;
+  struct http_req * request;
+  struct http_resp *rsp = NULL;
+  const char *rawrsp;
+
   while (1) {
 
     peer_sd = accept(sock_fd, NULL, NULL);
 
-    const char *content = NULL;
-    content = load_file("static", "/");
+    message = read_tcp_message(peer_sd);
+    request = parse_request(message);
+    free(message);
+    printf("METHOD IN HC: %s\n", request->method);
+    printf("PATH IN HC: %s\n", request->path);
+    if(strcmp(request->method, "GET")) {
+      free(request->method);
+      free(request->path);
+      free(request); 
 
-    struct http_resp *rsp = NULL;
-    const char *rawrsp;
+      rsp = create_405_response();
+      rawrsp = resp_to_str(rsp);
+      
+      free(rsp->body);
+      free(rsp->status_text);
+      free(rsp);
+      
+      write_tcp_message(peer_sd, rawrsp);
+      continue;
+    }
+
+    const char *content = NULL;
+    content = load_file("static", request->path);
+
     if(content == NULL) {
       rsp = create_404_response();
       rawrsp = resp_to_str(rsp);
@@ -51,6 +74,8 @@ int handle_connection(int sock_fd) {
 
     free(rsp);
     write_tcp_message(peer_sd, rawrsp);
+    rsp = NULL;
+    content = NULL;
   }
 }
 

@@ -6,8 +6,8 @@
 
 #define MAX_REQUEST_SIZE 2048
 
-int read_tcp_message(int peer_sd) {
-  char *response = (const char *)malloc(sizeof(char) * MAX_REQUEST_SIZE);
+const char * read_tcp_message(int peer_sd) {
+  char *response = (const char *)malloc(MAX_REQUEST_SIZE * sizeof response);
   memset(response, 0, MAX_REQUEST_SIZE);
 
   struct pollfd pfds[1];
@@ -15,7 +15,7 @@ int read_tcp_message(int peer_sd) {
 
   while (1) {
     initialize_reading_pfd((struct pollfd * const) &pfds[0], peer_sd);
-    rc = poll(&pfds[0], 1, 0);
+    rc = poll(&pfds[0], 1, 10);
     if (rc == -1) {
       return NULL;
     }

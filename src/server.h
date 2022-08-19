@@ -21,4 +21,4 @@ int start_server(const char *ip, u_int16_t port, const char *dir);
  */
 int handle_connections(int peer_sd);
 
-#endif;
+#endif

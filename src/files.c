@@ -20,9 +20,8 @@ FILE* find(const char *full_path) {
   if (file != NULL && !isDirectory(full_path)) {
     return file;
   } else {
-    const char *path_with_index = malloc(strlen(full_path) + 11);
-    strcat(path_with_index, full_path);
-    strcat(path_with_index, "index.html");
+    const char *path_with_index = calloc(strlen(full_path) + 11, sizeof *path_with_index);
+    sprintf(path_with_index, "%s%s", full_path, "index.html");
     file = fopen(path_with_index, "r");
     if (file == NULL) {
       return NULL;
@@ -32,14 +31,12 @@ FILE* find(const char *full_path) {
 }
 
 const char *load_file(const char *webc_files_dir, const char *path) {
-  int dir_l = strlen(webc_files_dir) * sizeof *path;
-  int path_l = strlen(path) * sizeof *path;
-  char *full_path = malloc(dir_l + path_l + sizeof *full_path);
+  int i = 0;
+  char *full_path = NULL;
+  if( asprintf(&full_path, "%s%s", webc_files_dir, path) == -1 ) {
+    perror("asprintf");
+  }
   char *content = malloc(10000 * sizeof *content);
-  memset(full_path, 0, dir_l + path_l + sizeof *full_path);
-  strcat(full_path, webc_files_dir);
-  strcat(full_path, path);
-
   FILE *file = find(full_path);
   free(full_path);
   if (file == NULL) {

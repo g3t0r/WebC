@@ -3,8 +3,19 @@
 #include "stdlib.h"
 #include "string.h"
 #include "tcp.h"
+char* get_first_line(const char *request);
 
-struct http_req *parse_request(const char *request) {}
+struct http_req *parse_request(const char *request) {
+  char *fl = get_first_line(request);
+  struct http_req *rq = calloc(1, sizeof *rq);
+
+  rq->method = strtok(fl, " ");
+  rq->path = strtok(NULL, " ");
+  printf("Method: %s\n", rq->method);
+  printf("Path: %s\n", rq->path);
+  free((void *)fl);
+  return rq;
+}
 
 const char *resp_to_str(const struct http_resp *const response) {
   char *bfc;
@@ -33,4 +44,20 @@ const struct http_resp *const create_ok_response(const char *body) {
   resp->status_code = 200;
   resp->status_text = "OK";
   return resp;
+}
+
+
+char* get_first_line(const char *request) {
+  int i = 0;
+  char delim[] = "\n";
+  char *tmp = NULL;
+  char *fl = calloc((strlen(request) + 1), sizeof *fl);
+
+  strncpy(fl, request, strlen(request) + 1);
+  fl = strtok(fl, delim);
+  if((tmp = realloc(fl, (strlen(fl) + 1) * sizeof *tmp))) {
+    fl = tmp;
+  }
+
+  return tmp;
 }

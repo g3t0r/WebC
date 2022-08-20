@@ -19,6 +19,7 @@ int start_server(const char *ip, u_int16_t port, const char *dir);
  * @param peer_sd peer socket of active connection
  * @return int 0 on success, -1 on failure
  */
-int handle_connections(int peer_sd);
+int handle_connections(int peer_sd, const char * file_dir);
+
 
 #endif

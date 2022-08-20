@@ -11,8 +11,6 @@ struct http_req *parse_request(const char *request) {
 
   rq->method = strtok(fl, " ");
   rq->path = strtok(NULL, " ");
-  printf("Method: %s\n", rq->method);
-  printf("Path: %s\n", rq->path);
   return rq;
 }
 

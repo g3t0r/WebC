@@ -4,27 +4,27 @@
 #include "stdint.h"
 
 struct http_req {
-  const char *method;
-  const char *path;
+  char *method;
+  char *path;
 };
 
 struct http_resp {
   uint16_t status_code;
-  const char *status_text;
-  const char *body;
+  char *status_text;
+  char *body;
 };
 
 struct http_req *parse_request(const char *request);
 
-const char* resp_to_str(const struct http_resp *const response);
+char* resp_to_str(const struct http_resp *const response);
 
-const struct http_resp *const create_405_response();
+struct http_resp *create_405_response();
 
-const struct http_resp *const create_404_response();
+struct http_resp *create_404_response();
 
-const struct http_resp *const create_ok_response(const char *body);
+struct http_resp *create_ok_response(const char *body);
 
-const struct http_resp *const create_response(uint16_t status_code,
+struct http_resp *create_response(uint16_t status_code,
                                               const char *status_text,
                                               const char *body);
 

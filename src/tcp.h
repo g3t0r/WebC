@@ -7,7 +7,7 @@
  * @param peer_sd peer socket of active connection
  * @return dst pointer to read message to
  */
-const char * read_tcp_message(int peer_sd);
+char * read_tcp_message(int peer_sd);
 
 /**
  * @brief read_tcp_message

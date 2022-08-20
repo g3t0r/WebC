@@ -3,11 +3,13 @@
 #include "string.h"
 #include "unistd.h"
 #include "stdio.h"
+#include "stdlib.h"
 
 #define MAX_REQUEST_SIZE 2048
+void initialize_reading_pfd(struct pollfd *const pfd, int peer_sd);
 
-const char * read_tcp_message(int peer_sd) {
-  char *response = (const char *)malloc(MAX_REQUEST_SIZE * sizeof response);
+char * read_tcp_message(int peer_sd) {
+  char *response = malloc(MAX_REQUEST_SIZE * sizeof response);
   memset(response, 0, MAX_REQUEST_SIZE);
 
   struct pollfd pfds[1];
@@ -32,7 +34,7 @@ const char * read_tcp_message(int peer_sd) {
     }
   }
   response[MAX_REQUEST_SIZE - 1] = '\0';
-  return (const char *) response;
+  return response;
 }
 
 int write_tcp_message(int peer_sd, const char *src) {

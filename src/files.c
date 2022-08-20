@@ -4,7 +4,6 @@
 #include "stdlib.h"
 #include "string.h"
 #include "sys/stat.h"
-#include "utils.h"
 
 int isDirectory(const char *path) {
   struct stat statbuf;
@@ -20,7 +19,7 @@ FILE* find(const char *full_path) {
   if (file != NULL && !isDirectory(full_path)) {
     return file;
   } else {
-    const char *path_with_index = calloc(strlen(full_path) + 11, sizeof *path_with_index);
+    char *path_with_index = calloc(strlen(full_path) + 11, sizeof *path_with_index);
     sprintf(path_with_index, "%s%s", full_path, "index.html");
     file = fopen(path_with_index, "r");
     if (file == NULL) {

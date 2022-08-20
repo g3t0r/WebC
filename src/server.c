@@ -20,7 +20,7 @@ void show_startup_info(uint16_t port) {
 int start_server(const char *ip, u_int16_t port, const char *dir) {
   int sock_fd, r;
   sock_fd = socket(AF_INET, SOCK_STREAM, 0);
-  if(sock_fd == NULL) {
+  if(sock_fd == -1) {
     perror("socket");
     exit(1);
   }
@@ -44,10 +44,10 @@ int start_server(const char *ip, u_int16_t port, const char *dir) {
 
 int handle_connections(int sock_fd, const char * files_dir) {
   int r, peer_sd;
-  const char *message;
+  char *message;
   struct http_req * request;
   struct http_resp *rsp = NULL;
-  const char *rawrsp;
+  char *rawrsp;
 
   while (1) {
 
